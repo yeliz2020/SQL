@@ -213,4 +213,73 @@ ORDER BY COUNT(*) DESC
 LIMIT 1;
 ```
 ***
-
+# SQL Ödev8
+1. test veritabanınızda employee isimli sütun bilgileri id(INTEGER), name VARCHAR(50), birthday DATE, email VARCHAR(100) olan bir tablo oluşturalım.
+2. Oluşturduğumuz employee tablosuna 'Mockaroo' servisini kullanarak 50 adet veri ekleyelim.
+3. Sütunların her birine göre diğer sütunları güncelleyecek 5 adet UPDATE işlemi yapalım.
+4. Sütunların her birine göre ilgili satırı silecek 5 adet DELETE işlemi yapalım.
+***
+1.
+```sql
+CREATE TABLE employee (
+	id SERIAL PRIMARY KEY,
+	name VARCHAR(50) NOT NULL,
+	birthday DATE,
+	email VARCHAR(100)
+);
+```
+2.
+```sql
+insert into employee (name, birthday, email) values ('Cleo Mordan', '1926/11/17', 'cmordan0@ning.com');
+```
+3.
+```sql
+UPDATE employee
+SET name = 'Yeliz İşler',
+	birthday = '1976-06-11',
+	email = 'yeliz@yeliz.com'
+WHERE id = 1
+RETURNING *;
+```
+```sql
+UPDATE employee
+SET name = 'Ayşe Küçük',
+	birthday = '1998-07-21',
+	email = 'ayse@ayse.com'
+WHERE name LIKE ('X%')
+RETURNING *;
+```
+```sql
+UPDATE employee
+SET name = 'Özgür Yıldız',
+	birthday = '1978-07-21',
+	email = 'ozgur@ozgur.com'
+WHERE birthday = '1962-11-16'
+RETURNING *;
+```
+```sql
+UPDATE employee
+SET email = 'test@test.com'
+WHERE email IS NULL
+RETURNING *;
+```
+4.
+```sql
+DELETE FROM employee
+WHERE id = 4;
+```
+```sql
+DELETE FROM employee
+WHERE name ILIKE ('S%')
+RETURNING *;
+```
+```sql
+DELETE FROM employee
+WHERE birthday < '1920-01-01'
+RETURNING *;
+```
+```sql
+DELETE FROM employee
+WHERE email ILIKE ('e%')
+RETURNING *;
+```
