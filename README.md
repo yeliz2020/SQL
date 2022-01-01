@@ -369,3 +369,58 @@ INTERSECT ALL
 (SELECT first_name FROM actor)
 EXCEPT ALL
 (SELECT first_name FROM customer);
+```
+***
+
+# SQL Ödev12
+
+Aşağıdaki sorgu senaryolarını dvdrental örnek veri tabanı üzerinden gerçekleştiriniz.
+
+1. film tablosunda film uzunluğu length sütununda gösterilmektedir. Uzunluğu ortalama film uzunluğundan fazla kaç tane film vardır?
+2. film tablosunda en yüksek rental_rate değerine sahip kaç tane film vardır?
+3. film tablosunda en düşük rental_rate ve en düşün replacement_cost değerlerine sahip filmleri sıralayınız.
+4. payment tablosunda en fazla sayıda alışveriş yapan müşterileri(customer) sıralayınız.
+***
+
+1.
+```sql
+SELECT COUNT(*) FROM film
+WHERE length>(SELECT AVG(length) 
+FROM film);
+```
+2.
+```sql
+SELECT COUNT(*) FROM film
+WHERE rental_rate=(SELECT MAX(rental_rate) 
+FROM film);
+```
+3.
+```sql
+SELECT * FROM film
+WHERE rental_rate = (SELECT MIN(rental_rate) FROM film) 
+AND 
+replacement_cost = (SELECT MIN(replacement_cost) FROM film);
+```
+4.
+En fazla harcama yapan müşterilerin sıralaması
+```sql
+SELECT c_id, first_name, last_name, total FROM (SELECT customer.customer_id AS c_id, customer.first_name AS first_name, customer.last_name AS last_name
+FROM customer) AS ctable
+JOIN (SELECT payment.customer_id AS id, SUM(amount) AS total FROM payment 
+GROUP BY id) AS ptable ON ctable.c_id = ptable.id
+ORDER BY total DESC;
+```
+En fazla sayıda alışveriş yapan müşterilerin sıralaması
+```sql
+SELECT c_id, first_name, last_name, number_of_purchases FROM 
+(SELECT customer.customer_id AS c_id, customer.first_name AS first_name, customer.last_name AS last_name
+FROM customer) AS ctable
+JOIN (SELECT payment.customer_id AS id, COUNT(amount) AS number_of_purchases FROM payment 
+GROUP BY id) AS ptable ON ctable.c_id = ptable.id
+ORDER BY number_of_purchases DESC;
+```
+***
+
+
+
+
